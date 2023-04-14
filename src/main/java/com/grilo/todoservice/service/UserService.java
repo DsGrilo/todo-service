@@ -1,5 +1,6 @@
 package com.grilo.todoservice.service;
 
+import com.grilo.todoservice.architecture.commom.GenericException;
 import com.grilo.todoservice.architecture.commom.Mapper;
 import com.grilo.todoservice.architecture.commom.Role;
 import com.grilo.todoservice.architecture.entity.user.User;
@@ -18,6 +19,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -26,18 +30,19 @@ public class UserService {
     private final WebSecurity webSecurity;
     private final TokenService tokenService;
 
-    public UserFindModel createUser(UserSaveModel model){
-        var user = new User();
-        var password = webSecurity.getPasswordEncoder().encode(model.getPassword());
-        user = mapper.convert(model, User.class);
+    public void createUser(UserSaveModel model){
+        var user = model.getId() == 0 ? new User():
+                userRepository.findById(model.getId()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if(model.getId() == 0){
+            var password = webSecurity.getPasswordEncoder().encode(model.getPassword());
+            user.setPassword(password);
+        }
 
-
-        if(model.getRole() == null) user.setRole(Role.CUSTOMER);
-
-        user.setPassword(password);
+        user.setName(model.getName());
+        user.setUsername(model.getUsername());
+        user.setRole(model.getRole());
 
         userRepository.save(user);
-        return mapper.convert(user, UserFindModel.class);
     }
 
     public UserFindModel verifyLogin(UserLoginModel model, HttpServletResponse httpServletResponse){
@@ -45,10 +50,27 @@ public class UserService {
 
        if(user.isEmpty()) throw new UsernameNotFoundException("Username or Password Incorrect");
        if(!webSecurity.getPasswordEncoder().matches(model.getPassword(), user.get().getPassword())) throw new BadCredentialsException("Username or Password Incorrect");
+       if(!user.get().isEnable()) throw new GenericException("User is disabled");
 
         httpServletResponse.addHeader("Authorization", tokenService.generateJWT(user.get()));
 
         return mapper.convert(user.get(), UserFindModel.class);
     }
 
+    public UserFindModel findById(int id){
+        var user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if(!user.isEnable()){
+            throw new GenericException("User is disabled");
+        }
+
+
+        return mapper.convert(user, UserFindModel.class);
+    }
+
+    public List<UserFindModel> findAll() {
+        return  userRepository.findAll().stream()
+                .map($ -> mapper.convert($, UserFindModel.class))
+                .collect(Collectors.toList());
+    }
 }

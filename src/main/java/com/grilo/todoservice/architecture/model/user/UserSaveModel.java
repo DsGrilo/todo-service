@@ -11,5 +11,4 @@ public class UserSaveModel {
     private String password;
     private Role role;
 
-
 }

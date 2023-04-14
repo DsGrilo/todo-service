@@ -4,10 +4,10 @@ import com.grilo.todoservice.architecture.commom.Role;
 import lombok.Data;
 
 @Data
-public class UserFindModel {
+public class UserCreateModel {
     private int id;
     private String name;
     private String username;
-    private Role role;
+    private String password;
 
 }
