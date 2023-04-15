@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +38,7 @@ public class UserController {
 
     @PostMapping("/login")
     public UserFindModel login(@RequestBody UserLoginModel model, HttpServletResponse httpServletResponse){
+
         return userService.verifyLogin(model, httpServletResponse);
     }
 
@@ -49,7 +51,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @GetMapping("/find/{id}")
     public UserFindModel findById(@PathVariable("id") int id){
-        return userService.findById(id);
+        return mapper.convert(userService.findById(id), UserFindModel.class);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
