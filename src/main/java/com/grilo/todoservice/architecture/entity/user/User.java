@@ -27,7 +27,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @Setter
-public class User implements UserDetails{
+public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -35,7 +35,6 @@ public class User implements UserDetails{
     @Column(unique = true)
     private String username;
     private String password;
-
     @Column(columnDefinition = "boolean default true")
     private boolean enable;
     private Date createdAt;
@@ -48,41 +47,4 @@ public class User implements UserDetails{
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        var authorities =  new ArrayList<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority(role.name()));
-        return authorities;
-    }
-
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
 }

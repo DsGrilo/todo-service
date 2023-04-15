@@ -3,19 +3,21 @@ package com.grilo.todoservice.security.jwt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.grilo.todoservice.architecture.entity.user.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.HashMap;
 
 
 @Service
 public class TokenService {
 
-    public String generateJWT(User user){
+    public String generateJWT(UserDetails user, int id){
         return JWT.create()
+                .withClaim("id", id)
                 .withSubject(user.getUsername())
-                .withClaim("id", user.getId())
                 .withExpiresAt(
                         LocalDateTime.now()
                                 .plusMinutes(10)
@@ -25,7 +27,8 @@ public class TokenService {
     }
 
     public String getSubject(String token) {
-        return JWT.require(Algorithm.HMAC512("secret_salt"))
+        var teste =  JWT.require(Algorithm.HMAC512("secret_salt"))
                 .build().verify(token).getSubject();
+        return teste;
     }
 }
