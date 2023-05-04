@@ -1,7 +1,6 @@
 package com.grilo.todoservice.schedule;
 
 import com.grilo.todoservice.service.TodoService;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
