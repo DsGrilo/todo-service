@@ -55,13 +55,14 @@ java -jar target/todo-service-0.0.1-SNAPSHOT.jar
 ### Acesse a aplicação em seu navegador em http://localhost:8080
 
 ## Uso
-O sistema utiliza roles para admnistrar determinadas rotas e permissões, sugiro que crie uma diretamente no banco com a ROLE ADMIN
+OBS: O sistema utiliza roles para admnistrar determinadas rotas e permissões, seguindo pela rotação de criação padrão criará somente com a role CUSTOMER,
+caso queira admnistrar os usuarios cadastrados, sugiro criar primeiramente direto no banco um usuário com a ROLE ADMIN
+Segue Ex:
 ```
 INSERT INTO user (name, username, password, enable, createdAt) 
 VALUES ('Nome do Usuário', 'admin', 'senha123', true, NOW());
 ```
 
-OBS: Pode gerar a senha usando o passwordEncoder para criptografa-la e salvar no banco
 
 
 Para usar o Todo Service, basta criar uma conta e começar a adicionar suas tarefas. </br>
