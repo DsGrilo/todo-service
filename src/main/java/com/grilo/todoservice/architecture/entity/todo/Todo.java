@@ -24,7 +24,7 @@ public class Todo {
     private String description;
     private String category;
     private Date expiration;
-    private boolean expirated
+    private boolean expirated;
     private Date createdAt;
     private Date updatedAt;
     private String icon;
@@ -32,6 +32,7 @@ public class Todo {
     private User creator;
     @OneToMany
     private List<User> viewers;
+    private boolean finished;
 
 
 

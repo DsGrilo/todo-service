@@ -51,14 +51,19 @@ public class TodoService {
     }
 
     public List<Todo> list(User user) {
-        return repository.findByCreator_Id(user.getId());
+        return repository.findByCreator_IdOrViewers_Id(user.getId(), user.getId());
     }
 
     public void delete(int id) {
-        var todo = repository.findById(id);
-        if(todo.isEmpty()){
+        var opt = repository.findById(id);
+        if(opt.isEmpty()){
             throw new GenericException("Not Found");
         }
-        repository.delete(todo.get());
+        repository.delete(opt.get());
+    }
+
+    public void finished(int id){
+        var todo = findById(id);
+        todo.setFinished(!todo.isFinished());
     }
 }

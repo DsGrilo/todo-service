@@ -1,8 +1,7 @@
 package com.grilo.todoservice.controller;
 
-import com.grilo.todoservice.architecture.commom.exception.GenericException;
 import com.grilo.todoservice.architecture.commom.Mapper;
-import com.grilo.todoservice.architecture.entity.user.User;
+import com.grilo.todoservice.architecture.commom.exception.GenericException;
 import com.grilo.todoservice.architecture.model.todo.TodoCreateModel;
 import com.grilo.todoservice.architecture.model.todo.TodoEditModel;
 import com.grilo.todoservice.architecture.model.todo.TodoFindModel;
@@ -16,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/todo")
@@ -42,7 +41,6 @@ public class TodoController {
     public void create(@RequestBody TodoCreateModel model, @AuthenticationPrincipal JwtUser user){
         service.create(model, user.getUsername());
     }
-
 
     @PostMapping("/edit")
     @PreAuthorize("hasAuthority('CUSTOMER')")
@@ -63,9 +61,11 @@ public class TodoController {
     @PreAuthorize("hasAuthority('CUSTOMER')")
     public List<TodoListModel> list(@AuthenticationPrincipal JwtUser jwtUser){
         var user = userService.getUser(jwtUser.getUsername());
-        var list = service.list(user);
-        return list.stream().map($ -> mapper.convert($, TodoListModel.class))
-                .collect(Collectors.toList());
+        return service.list(user).stream().map($ -> {
+            var todo = mapper.convert($, TodoListModel.class);
+            todo.setResponsible($.getCreator().getId() == jwtUser.getId());
+            return todo;
+        }).toList();
     }
 
     @GetMapping("/find/{id}")
@@ -78,5 +78,11 @@ public class TodoController {
     @PreAuthorize("hasAuthority('CUSTOMER')")
     public void deleteById(@PathVariable("id") int id){
         service.delete(id);
+    }
+
+    @PatchMapping("/finish/{id}")
+    @PreAuthorize("hasAuthority('CUSTOMER')")
+    public void finishTodo(@PathVariable("id") int id){
+        service.finished(id);
     }
 }

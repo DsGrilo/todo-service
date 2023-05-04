@@ -18,6 +18,5 @@ public class TodoCreateModel {
     private String category;
     private Date expiration;
     private String icon;
-
     private List<Integer> viewers;
 }
