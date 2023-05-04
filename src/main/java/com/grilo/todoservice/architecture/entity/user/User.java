@@ -42,6 +42,7 @@ public class User{
 
     @PrePersist
     public void pre(){
+        this.enable = true;
         this.createdAt = new Date();
     }
 

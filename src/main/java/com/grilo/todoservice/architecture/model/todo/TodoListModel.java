@@ -18,5 +18,6 @@ public class TodoListModel {
     private String title;
     private String category;
     private Date expiration;
+    private boolean expirated;
     private String icon;
 }

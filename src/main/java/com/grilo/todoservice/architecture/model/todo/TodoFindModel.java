@@ -17,5 +17,6 @@ public class TodoFindModel {
     private String description;
     private String category;
     private Date expiration;
+    private boolean expirated;
     private String icon;
 }

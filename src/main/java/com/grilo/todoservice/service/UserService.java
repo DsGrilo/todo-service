@@ -1,5 +1,6 @@
 package com.grilo.todoservice.service;
 
+import com.grilo.todoservice.architecture.commom.Role;
 import com.grilo.todoservice.architecture.commom.exception.GenericException;
 import com.grilo.todoservice.architecture.commom.Mapper;
 import com.grilo.todoservice.architecture.entity.user.User;
@@ -40,7 +41,7 @@ public class UserService {
 
         user.setName(model.getName());
         user.setUsername(model.getUsername());
-        user.setRole(model.getRole());
+        user.setRole(model.getRole() == null ? Role.CUSTOMER : Role.ADMIN);
 
         userRepository.save(user);
     }

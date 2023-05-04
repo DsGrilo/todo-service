@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,4 +18,6 @@ public class TodoCreateModel {
     private String category;
     private Date expiration;
     private String icon;
+
+    private List<Integer> viewers;
 }

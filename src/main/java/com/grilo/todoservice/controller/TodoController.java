@@ -71,8 +71,7 @@ public class TodoController {
     @GetMapping("/find/{id}")
     @PreAuthorize("hasAuthority('CUSTOMER')")
     public TodoFindModel findById(@PathVariable("id") int id){
-        var todo = service.findById(id);
-        return mapper.convert(todo, TodoFindModel.class);
+        return mapper.convert(service.findById(id), TodoFindModel.class);
     }
 
     @DeleteMapping("/delete/{id}")

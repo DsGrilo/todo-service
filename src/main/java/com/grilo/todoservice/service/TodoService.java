@@ -9,6 +9,7 @@ import com.grilo.todoservice.architecture.repository.todo.TodoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,18 +24,30 @@ public class TodoService {
         var user = userService.getUser(creatorUsername);
 
         todo = mapper.convert(model, Todo.class);
+
+        if(model.getViewers() != null && model.getViewers().size() > 0){
+            var viewers = new ArrayList<User>();
+
+            for(var i = 0; i < model.getViewers().size(); i++){
+                var viewer = userService.findById(model.getViewers().get(i));
+                viewers.add(viewer);
+            }
+
+            todo.setViewers(viewers);
+        }
+
         todo.setCreator(user);
 
         repository.save(todo);
     }
 
     public Todo findById(int id) {
-        var todo = repository.findById(id);
-        if(todo.isEmpty()){
+        var opt = repository.findById(id);
+        if(opt.isEmpty()){
             throw new GenericException("Not Found");
         }
 
-        return todo.get();
+        return opt.get();
     }
 
     public List<Todo> list(User user) {
