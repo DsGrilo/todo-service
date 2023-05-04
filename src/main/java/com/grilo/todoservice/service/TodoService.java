@@ -41,6 +41,8 @@ public class TodoService {
         repository.save(todo);
     }
 
+    public void save(Todo todo){repository.save(todo);}
+
     public Todo findById(int id) {
         var opt = repository.findById(id);
         if(opt.isEmpty()){
@@ -54,6 +56,7 @@ public class TodoService {
         return repository.findByCreator_IdOrViewers_Id(user.getId(), user.getId());
     }
 
+    public List<Todo> findAll(){return repository.findAll();}
     public void delete(int id) {
         var opt = repository.findById(id);
         if(opt.isEmpty()){
@@ -62,8 +65,11 @@ public class TodoService {
         repository.delete(opt.get());
     }
 
-    public void finished(int id){
+    public void finished(int id, int userId){
         var todo = findById(id);
+        if(todo.getCreator().getId() != userId){
+            throw new GenericException("Only the person in charge can finish a task");
+        }
         todo.setFinished(!todo.isFinished());
     }
 }

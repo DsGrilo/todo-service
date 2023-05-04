@@ -82,7 +82,7 @@ public class TodoController {
 
     @PatchMapping("/finish/{id}")
     @PreAuthorize("hasAuthority('CUSTOMER')")
-    public void finishTodo(@PathVariable("id") int id){
-        service.finished(id);
+    public void finishTodo(@PathVariable("id") int id, @AuthenticationPrincipal JwtUser jwtUser){
+        service.finished(id, jwtUser.getId());
     }
 }

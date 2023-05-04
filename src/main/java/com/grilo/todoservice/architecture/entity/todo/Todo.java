@@ -44,4 +44,6 @@ public class Todo {
     public boolean hasViewers(){
         return viewers != null && viewers.size() > 0;
     }
+
+    public boolean hasExpirated(Date today) { return today.after(expiration);}
 }
